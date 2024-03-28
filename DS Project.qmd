@@ -19,5 +19,8 @@ editor: visual
 #Set-up
 library(tidyverse)
 data <- read.csv()
+
+#Use drop_na to pre-process data
 ```
 
+hfkdfh
