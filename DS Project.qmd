@@ -14,3 +14,10 @@ editor: visual
 ---
 
 ## 
+
+```{r}
+#Set-up
+library(tidyverse)
+data <- read.csv()
+```
+
