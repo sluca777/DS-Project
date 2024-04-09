@@ -13,14 +13,43 @@ format:
 editor: visual
 ---
 
-## 
+# Introduction
+
+In the contemporary landscape of American family life, the cost of childcare emerges as a pivotal factor influencing economic stability, parental employment, and, ultimately, child welfare. Access to affordable, quality childcare has been linked to a range of positive outcomes, including increased workforce participation, particularly among women, and enhanced child development. Yet, for many families across the United States, childcare remains a significant financial burden, absorbing a disproportionate share of household income. This project seeks to illuminate the complexities surrounding childcare costs, shedding light on their variability across different geographical regions and over time.
+
+This analysis is anchored in data drawn from the National Database of Childcare Prices, the most comprehensive federal repository of childcare price information at the county level. Spanning from 2008 to 2018, this database offers a granular look at childcare costs across various dimensions: by provider type, the age of children, and county characteristics. The project utilizes two primary data sets: childcare_costs.csv, containing detailed childcare price data, and counties.csv, which provides a suite of county-level attributes. These datasets are unified through the county_fips_code, enabling a holistic examination of how childcare costs correlate with a myriad of socioeconomic factors.
+
+The goal of this project is not merely to chart the ebb and flow of childcare expenses but to understand the broader implications of these costs on families and communities. By employing a robust analytical framework, this study will explore several key questions: How have childcare costs evolved over the last decade? Do these costs exhibit significant variability across states or regions? What socioeconomic variables—such as unemployment rates, median household income, or racial composition—interact most dynamically with childcare expenses?
+
+The answers to these questions promise not only to advance our understanding of childcare economics but also to inform policy discussions aimed at making quality childcare more accessible and affordable. Through a meticulous analysis of available data, this project endeavors to contribute a meaningful voice to the ongoing dialogue about how best to support American families in balancing the demands of work and child-rearing.
+
+
+
+
+
+
+
 
 ```{r}
 #Set-up
 library(tidyverse)
-data <- read.csv()
+counties <- read.csv("C:/Users/Lucas Rapeepat/Downloads/counties.csv")
+costs <- read.csv("C:/Users/Lucas Rapeepat/Downloads/childcare_costs.csv")
+
 
 #Use drop_na to pre-process data
+```
+
+
+
+## Joining the Tables and filtering out N/A
+
+```{r}
+ccosts <- costs |>
+  inner_join(counties, by = "county_fips_code") |>
+  drop_na()
+
+
 ```
 
 
