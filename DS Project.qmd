@@ -30,6 +30,14 @@ The answers to these questions promise not only to advance our understanding of 
 
 
 
+
+
+
+
+
+
+# Step 2
+
 ```{r}
 #Set-up
 library(tidyverse)
@@ -42,6 +50,22 @@ costs <- read.csv("C:/Users/Lucas Rapeepat/Downloads/childcare_costs.csv")
 
 
 
+Data Pre-Processing
+
+The foundational step in our analysis involved the meticulous preparation of two pivotal datasets, each serving as a cornerstone for our exploration of childcare costs across the United States. The first dataset, childcare_costs.csv, encompasses a comprehensive array of childcare pricing information, delineated by provider type, child age, and the specific characteristics of each county. This dataset spans from 2008 to 2018, offering a decade's worth of insights into the evolution of childcare expenses. With over 30,000 rows, it encapsulates yearly data for numerous counties, presenting an opportunity to dissect the financial aspects of childcare with unprecedented granularity.
+
+Our second dataset, counties.csv, complements the first by providing a rich tapestry of county-level attributes. This includes, but is not limited to, demographic breakdowns, economic indicators, and social characteristics. The fusion of these datasets via the county_fips_code, a unique identifier for each county, allows for a nuanced analysis that transcends mere cost examination to include socio-economic factors.
+
+Joining Data Sets
+The initial phase of data pre-processing involved the unification of the childcare_costs.csv and counties.csv datasets. This was accomplished through an inner join operation, ensuring that only records with matching county_fips_code in both datasets were retained. This meticulous merging process was instrumental in creating a cohesive dataset that aligns childcare cost data with corresponding county characteristics, laying the groundwork for a comprehensive analysis.
+
+Removing Missing Data
+A critical step in data cleaning was the systematic removal of missing data. Given the expansive nature of our datasets, missing values were inevitable. However, to ensure the integrity and reliability of our analysis, rows containing missing values—particularly in key variables of interest such as childcare costs and county characteristics—were excluded. This pruning was essential for maintaining a high standard of accuracy in our subsequent analyses.
+
+Filtering Data
+To tailor our dataset to the specific scope of our study, we applied filtering criteria, honing in on the most relevant records. This involved selecting data pertinent to our analysis timeframe, from 2008 to 2018, and focusing on variables critical to our research questions. Such filtering was pivotal in refining our dataset, ensuring that our analysis remained focused and relevant.
+
+
 ## Joining the Tables and filtering out N/A
 
 ```{r}
@@ -49,7 +73,19 @@ ccosts <- costs |>
   inner_join(counties, by = "county_fips_code") |>
   drop_na()
 
-
 ```
+
+
+# Section 3
+
+Ideas: 
+
+
+
+
+
+
+
+
 
 
