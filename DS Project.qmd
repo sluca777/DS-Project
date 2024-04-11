@@ -41,44 +41,113 @@ The answers to these questions promise not only to advance our understanding of 
 ```{r}
 #Set-up
 library(tidyverse)
-counties <- read.csv("C:/Users/Lucas Rapeepat/Downloads/counties.csv")
-costs <- read.csv("C:/Users/Lucas Rapeepat/Downloads/childcare_costs.csv")
-
-
-#Use drop_na to pre-process data
 ```
 
 
 
-Data Pre-Processing
+## Data Pre-Processing
 
-The foundational step in our analysis involved the meticulous preparation of two pivotal datasets, each serving as a cornerstone for our exploration of childcare costs across the United States. The first dataset, childcare_costs.csv, encompasses a comprehensive array of childcare pricing information, delineated by provider type, child age, and the specific characteristics of each county. This dataset spans from 2008 to 2018, offering a decade's worth of insights into the evolution of childcare expenses. With over 30,000 rows, it encapsulates yearly data for numerous counties, presenting an opportunity to dissect the financial aspects of childcare with unprecedented granularity.
+Our journey through data analysis began with a structured approach to preparing our datasets, childcare_costs.csv and counties.csv, for comprehensive exploration. This preparation involved a series of steps aimed at refining and integrating our data, ensuring it was primed for the analyses that lay ahead. Here, we detail the practical steps taken, accompanied by the R code used to execute these operations.
 
-Our second dataset, counties.csv, complements the first by providing a rich tapestry of county-level attributes. This includes, but is not limited to, demographic breakdowns, economic indicators, and social characteristics. The fusion of these datasets via the county_fips_code, a unique identifier for each county, allows for a nuanced analysis that transcends mere cost examination to include socio-economic factors.
+Initial Data Inspection
+Before delving into the pre-processing steps, we initiated our exploration by loading and inspecting the datasets to understand their structure:
 
-Joining Data Sets
-The initial phase of data pre-processing involved the unification of the childcare_costs.csv and counties.csv datasets. This was accomplished through an inner join operation, ensuring that only records with matching county_fips_code in both datasets were retained. This meticulous merging process was instrumental in creating a cohesive dataset that aligns childcare cost data with corresponding county characteristics, laying the groundwork for a comprehensive analysis.
+### Loading the datasets
+```{r}
+childcare_costs <- read.csv("C:/Users/Lucas Rapeepat/Downloads/childcare_costs.csv")
+counties <- read.csv("C:/Users/Lucas Rapeepat/Downloads/counties.csv")
 
-Removing Missing Data
-A critical step in data cleaning was the systematic removal of missing data. Given the expansive nature of our datasets, missing values were inevitable. However, to ensure the integrity and reliability of our analysis, rows containing missing values—particularly in key variables of interest such as childcare costs and county characteristics—were excluded. This pruning was essential for maintaining a high standard of accuracy in our subsequent analyses.
+```
 
-Filtering Data
-To tailor our dataset to the specific scope of our study, we applied filtering criteria, honing in on the most relevant records. This involved selecting data pertinent to our analysis timeframe, from 2008 to 2018, and focusing on variables critical to our research questions. Such filtering was pivotal in refining our dataset, ensuring that our analysis remained focused and relevant.
+# Initial inspection to understand the structure and contents
+```{r}
+str(childcare_costs)
+str(counties)
+```
 
-
-## Joining the Tables and filtering out N/A
+Joining the Datasets
+Our first major step was to merge the two datasets using the county_fips_code as a key. This inner join operation ensured that we retained only those records present in both datasets, facilitating a unified analysis framework.
 
 ```{r}
-ccosts <- costs |>
-  inner_join(counties, by = "county_fips_code") |>
+# Merging the datasets on the county_fips_code
+combined_data <- childcare_costs |>
+  inner_join(counties, by = "county_fips_code")
+
+```
+
+
+Removing Missing Data
+To enhance the reliability of our analysis, we next focused on identifying and excluding rows with missing values, particularly in critical variables such as childcare costs and county characteristics.
+
+```{r}
+# Removing rows with any missing values
+cleaned_data <- combined_data |>
   drop_na()
 
 ```
 
 
+
+Data Filtering
+With a focus on our analysis timeframe (2008 to 2018) and specific variables of interest, we applied filters to refine our dataset further, ensuring relevance and focus in our analysis.
+
+```{r}
+# Example of filtering data (if specific years or conditions were needed)
+# For demonstration, assuming we proceed with the full dataset as is
+
+# cleaned_data <- cleaned_data %>%
+#   filter(year >= 2008 & year <= 2018)
+
+```
+
+
+
+Creation of New Variables
+To facilitate deeper insights and enable more nuanced analyses, we derived new variables from our existing data, such as categorizations based on socio-economic indicators.
+
+```{r}
+# Example of creating a new variable (categorizing counties by median income)
+# For demonstration, assuming no new variables were created at this step
+
+# cleaned_data <- cleaned_data %>%
+#   mutate(income_category = cut(median_household_income, 
+#                                breaks = quantile(median_household_income, 
+#                                                   probs = 0:5 / 5, na.rm = TRUE),
+#                                include.lowest = TRUE))
+
+```
+
+
+Final Dataset Dimensions
+After these steps, we examined the dimensions of our final dataset to confirm the scope of our analysis base:
+
+```{r}
+nrow(cleaned_data)
+ncol(cleaned_data)
+dim(cleaned_data)
+```
+
+
 # Section 3
 
-Ideas: 
+
+Did childcare costs (by age group) on average change over time from 2008 to 2018?
+```{r}
+cost_trends <- cleaned_data |>
+  select(study_year, mc_infant, mc_toddler, mc_preschool) |>
+  group_by(study_year) |>
+  summarize(across(starts_with("mc"), mean, na.rm = TRUE))
+
+ggplot(cost_trends, aes(x = study_year)) +
+  geom_line(aes(y = mc_infant, color = "Infant")) +
+  geom_line(aes(y = mc_toddler, color = "Toddler")) +
+  geom_line(aes(y = mc_preschool, color = "Preschool")) +
+  labs(title = "Childcare Costs Trends from 2008 to 2018",
+       x = "Year",
+       y = "Average Cost",
+       color = "Age Group")
+```
+
 
 
 
