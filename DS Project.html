@@ -3024,10 +3024,16 @@ vertical-align: -.125em;
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction">Introduction</a>
+  <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction">Introduction</a></li>
+  <li><a href="#step-2" id="toc-step-2" class="nav-link" data-scroll-target="#step-2">Step 2</a>
   <ul class="collapse">
-  <li><a href="#joining-the-tables-and-filtering-out-na" id="toc-joining-the-tables-and-filtering-out-na" class="nav-link" data-scroll-target="#joining-the-tables-and-filtering-out-na">Joining the Tables and filtering out N/A</a></li>
+  <li><a href="#data-pre-processing" id="toc-data-pre-processing" class="nav-link" data-scroll-target="#data-pre-processing">Data Pre-Processing</a>
+  <ul class="collapse">
+  <li><a href="#loading-the-datasets" id="toc-loading-the-datasets" class="nav-link" data-scroll-target="#loading-the-datasets">Loading the datasets</a></li>
   </ul></li>
+  </ul></li>
+  <li><a href="#initial-inspection-to-understand-the-structure-and-contents" id="toc-initial-inspection-to-understand-the-structure-and-contents" class="nav-link" data-scroll-target="#initial-inspection-to-understand-the-structure-and-contents">Initial inspection to understand the structure and contents</a></li>
+  <li><a href="#section-3" id="toc-section-3" class="nav-link" data-scroll-target="#section-3">Section 3</a></li>
   </ul>
 </nav>
 </div>
@@ -3062,11 +3068,16 @@ vertical-align: -.125em;
 <p>This analysis is anchored in data drawn from the National Database of Childcare Prices, the most comprehensive federal repository of childcare price information at the county level. Spanning from 2008 to 2018, this database offers a granular look at childcare costs across various dimensions: by provider type, the age of children, and county characteristics. The project utilizes two primary data sets: childcare_costs.csv, containing detailed childcare price data, and counties.csv, which provides a suite of county-level attributes. These datasets are unified through the county_fips_code, enabling a holistic examination of how childcare costs correlate with a myriad of socioeconomic factors.</p>
 <p>The goal of this project is not merely to chart the ebb and flow of childcare expenses but to understand the broader implications of these costs on families and communities. By employing a robust analytical framework, this study will explore several key questions: How have childcare costs evolved over the last decade? Do these costs exhibit significant variability across states or regions? What socioeconomic variables—such as unemployment rates, median household income, or racial composition—interact most dynamically with childcare expenses?</p>
 <p>The answers to these questions promise not only to advance our understanding of childcare economics but also to inform policy discussions aimed at making quality childcare more accessible and affordable. Through a meticulous analysis of available data, this project endeavors to contribute a meaningful voice to the ongoing dialogue about how best to support American families in balancing the demands of work and child-rearing.</p>
+</section>
+<section id="step-2" class="level1">
+<h1>Step 2</h1>
 <div class="cell">
 <details>
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="co">#Set-up</span></span>
-<span id="cb1-2"><a href="#cb1-2"></a><span class="fu">library</span>(tidyverse)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-2"><a href="#cb1-2"></a><span class="co">#| message: false</span></span>
+<span id="cb1-3"><a href="#cb1-3"></a><span class="co">#| warning: false</span></span>
+<span id="cb1-4"><a href="#cb1-4"></a><span class="fu">library</span>(tidyverse)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stderr">
 <pre><code>Warning: package &#39;tidyverse&#39; was built under R version 4.2.3</code></pre>
@@ -3083,28 +3094,227 @@ vertical-align: -.125em;
 ✖ dplyr::lag()    masks stats::lag()
 ℹ Use the conflicted package (&lt;http://conflicted.r-lib.org/&gt;) to force all conflicts to become errors</code></pre>
 </div>
-<details>
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a>counties <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">&quot;C:/Users/Lucas Rapeepat/Downloads/counties.csv&quot;</span>)</span>
-<span id="cb4-2"><a href="#cb4-2"></a>costs <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">&quot;C:/Users/Lucas Rapeepat/Downloads/childcare_costs.csv&quot;</span>)</span>
-<span id="cb4-3"><a href="#cb4-3"></a></span>
-<span id="cb4-4"><a href="#cb4-4"></a></span>
-<span id="cb4-5"><a href="#cb4-5"></a><span class="co">#Use drop_na to pre-process data</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
 </div>
-<section id="joining-the-tables-and-filtering-out-na" class="level2">
-<h2 class="anchored" data-anchor-id="joining-the-tables-and-filtering-out-na">Joining the Tables and filtering out N/A</h2>
+<section id="data-pre-processing" class="level2">
+<h2 class="anchored" data-anchor-id="data-pre-processing">Data Pre-Processing</h2>
+<p>Our journey through data analysis began with a structured approach to preparing our datasets, childcare_costs.csv and counties.csv, for comprehensive exploration. This preparation involved a series of steps aimed at refining and integrating our data, ensuring it was primed for the analyses that lay ahead. Here, we detail the practical steps taken, accompanied by the R code used to execute these operations.</p>
+<p>Initial Data Inspection Before delving into the pre-processing steps, we initiated our exploration by loading and inspecting the datasets to understand their structure:</p>
+<section id="loading-the-datasets" class="level3">
+<h3 class="anchored" data-anchor-id="loading-the-datasets">Loading the datasets</h3>
 <div class="cell">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a>ccosts <span class="ot">&lt;-</span> costs <span class="sc">|&gt;</span></span>
-<span id="cb5-2"><a href="#cb5-2"></a>  <span class="fu">inner_join</span>(counties, <span class="at">by =</span> <span class="st">&quot;county_fips_code&quot;</span>) <span class="sc">|&gt;</span></span>
-<span id="cb5-3"><a href="#cb5-3"></a>  <span class="fu">drop_na</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a>childcare_costs <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">&quot;C:/Users/Lucas Rapeepat/Downloads/childcare_costs.csv&quot;</span>)</span>
+<span id="cb4-2"><a href="#cb4-2"></a>counties <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">&quot;C:/Users/Lucas Rapeepat/Downloads/counties.csv&quot;</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
+</div>
+</section>
+</section>
+</section>
+<section id="initial-inspection-to-understand-the-structure-and-contents" class="level1">
+<h1>Initial inspection to understand the structure and contents</h1>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a><span class="fu">str</span>(childcare_costs)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>&#39;data.frame&#39;:   34567 obs. of  61 variables:
+ $ county_fips_code         : int  1001 1001 1001 1001 1001 1001 1001 1001 1001 1001 ...
+ $ study_year               : int  2008 2009 2010 2011 2012 2013 2014 2015 2016 2017 ...
+ $ unr_16                   : num  5.42 5.93 6.21 7.55 8.6 9.39 8.5 7.64 5.59 5.21 ...
+ $ funr_16                  : num  4.41 5.72 5.57 8.13 8.88 ...
+ $ munr_16                  : num  6.32 6.11 6.78 7.03 8.29 8.56 7.95 6.91 4.99 4.64 ...
+ $ unr_20to64               : num  4.6 4.8 5.1 6.2 6.7 7.3 6.8 5.9 4.4 4.6 ...
+ $ funr_20to64              : num  3.5 4.6 4.6 6.3 6.4 7.6 6.8 6.1 4.6 4.9 ...
+ $ munr_20to64              : num  5.6 5 5.6 6.1 7 7 6.8 5.9 4.3 4.3 ...
+ $ flfpr_20to64             : num  68.9 70.8 71.3 70.2 70.6 70.7 69.9 68.8 68.3 67.9 ...
+ $ flfpr_20to64_under6      : num  66.9 63.7 67 66.5 67.1 67.5 65.2 66.8 67.4 63.9 ...
+ $ flfpr_20to64_6to17       : num  79.6 78.4 78.2 77.6 76.3 ...
+ $ flfpr_20to64_under6_6to17: num  60.8 59.9 59.7 59.3 58.3 ...
+ $ mlfpr_20to64             : num  84 86.2 85.8 85.7 85.7 85 84.2 82.5 81.9 82 ...
+ $ pr_f                     : num  8.5 7.5 7.5 7.4 7.4 8.3 9.1 9.3 9.4 10.9 ...
+ $ pr_p                     : num  11.5 10.3 10.6 10.9 11.6 12.1 12.8 12.9 12.3 13.7 ...
+ $ mhi_2018                 : num  58463 60212 61776 60367 59150 ...
+ $ me_2018                  : num  32711 34688 34741 34564 34328 ...
+ $ fme_2018                 : num  25156 26853 27391 26728 27968 ...
+ $ mme_2018                 : num  41437 43866 46155 45333 44276 ...
+ $ total_pop                : int  49744 49584 53155 53944 54590 54907 55136 55221 55049 55036 ...
+ $ one_race                 : num  98.1 98.6 98.5 98.5 98.5 98.6 98.7 98.4 98 98.3 ...
+ $ one_race_w               : num  78.9 79.1 79.1 78.9 78.9 78.3 78 77.4 76.9 76.6 ...
+ $ one_race_b               : num  17.7 17.9 17.9 18.1 18.1 18.4 18.6 18.7 18.5 19.1 ...
+ $ one_race_i               : num  0.4 0.4 0.3 0.2 0.3 0.3 0.4 0.4 0.4 0.3 ...
+ $ one_race_a               : num  0.4 0.6 0.7 0.7 0.8 1 0.9 1 0.8 0.9 ...
+ $ one_race_h               : num  0 0 0 0 0 0 0 0 0.1 0.1 ...
+ $ one_race_other           : num  0.7 0.7 0.6 0.5 0.4 0.7 0.7 0.9 1.4 1.3 ...
+ $ two_races                : num  1.9 1.4 1.5 1.5 1.5 1.4 1.3 1.6 2 1.7 ...
+ $ hispanic                 : num  1.8 2 2.3 2.4 2.4 2.5 2.5 2.6 2.6 2.7 ...
+ $ households               : int  18373 18288 19718 19998 19934 20071 20304 20396 20800 21054 ...
+ $ h_under6_both_work       : int  1543 1475 1569 1695 1714 1532 1557 1306 1321 1243 ...
+ $ h_under6_f_work          : int  970 964 1009 1060 938 880 1191 1258 1361 1301 ...
+ $ h_under6_m_work          : int  22 16 16 106 120 161 159 211 109 102 ...
+ $ h_under6_single_m        : int  995 1099 1110 1030 1095 1160 954 883 731 843 ...
+ $ h_6to17_both_work        : int  4900 5028 5472 5065 4608 4238 4056 4030 4265 4557 ...
+ $ h_6to17_fwork            : int  1308 1519 1541 1965 1963 1978 2073 2086 1793 1503 ...
+ $ h_6to17_mwork            : int  114 92 113 246 284 354 373 551 322 341 ...
+ $ h_6to17_single_m         : int  1966 2305 2377 2299 2644 2522 2269 2104 2168 2046 ...
+ $ emp_m                    : num  27.4 29.5 29.3 31.2 32.1 ...
+ $ memp_m                   : num  24.4 26.1 25.9 27 28.6 ...
+ $ femp_m                   : num  30.7 33.4 33.1 36 36.1 ...
+ $ emp_service              : num  17.1 15.8 16.9 16.2 16.1 ...
+ $ memp_service             : num  15.5 14.2 15.1 14.2 14.7 ...
+ $ femp_service             : num  18.8 17.6 18.9 18.4 17.6 ...
+ $ emp_sales                : num  29.1 28.8 29.1 27.6 28.4 ...
+ $ memp_sales               : num  16 17.5 17.8 17.7 17.8 ...
+ $ femp_sales               : num  43.5 41.2 41.4 38.8 40.3 ...
+ $ emp_n                    : num  13.21 11.89 11.57 10.72 9.02 ...
+ $ memp_n                   : num  22.5 20.3 19.9 18.3 16 ...
+ $ femp_n                   : num  2.99 2.52 2.45 2.09 1.19 0.77 0.58 0.07 0.1 0.09 ...
+ $ emp_p                    : num  13.2 14 13.1 14.4 14.4 ...
+ $ memp_p                   : num  21.6 22 21.3 22.8 22.9 ...
+ $ femp_p                   : num  4.07 5.19 4.13 4.77 4.84 4.36 6.07 7.75 8.19 8.17 ...
+ $ mcsa                     : num  80.9 83.4 85.9 88.4 90.9 ...
+ $ mfccsa                   : num  81.4 85.7 90 94.2 98.5 ...
+ $ mc_infant                : num  105 105 105 105 106 ...
+ $ mc_toddler               : num  105 105 105 105 106 ...
+ $ mc_preschool             : num  85.9 87.6 89.3 90.9 92.6 ...
+ $ mfcc_infant              : num  83.5 87.4 91.3 95.3 99.2 ...
+ $ mfcc_toddler             : num  83.5 87.4 91.3 95.3 99.2 ...
+ $ mfcc_preschool           : num  81.4 85.7 90 94.2 98.5 ...</code></pre>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a><span class="fu">str</span>(counties)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>&#39;data.frame&#39;:   3144 obs. of  4 variables:
+ $ county_fips_code  : int  1001 1003 1005 1007 1009 1011 1013 1015 1017 1019 ...
+ $ county_name       : chr  &quot;Autauga County&quot; &quot;Baldwin County&quot; &quot;Barbour County&quot; &quot;Bibb County&quot; ...
+ $ state_name        : chr  &quot;Alabama&quot; &quot;Alabama&quot; &quot;Alabama&quot; &quot;Alabama&quot; ...
+ $ state_abbreviation: chr  &quot;AL&quot; &quot;AL&quot; &quot;AL&quot; &quot;AL&quot; ...</code></pre>
+</div>
+</div>
+<p>Number of Counties: How many unique counties are available for analysis?</p>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1"></a>counties <span class="sc">|&gt;</span></span>
+<span id="cb9-2"><a href="#cb9-2"></a>  <span class="fu">n_distinct</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 3144</code></pre>
+</div>
+</div>
+<p>Joining the Datasets Our first major step was to merge the two datasets using the county_fips_code as a key. This inner join operation ensured that we retained only those records present in both datasets, facilitating a unified analysis framework.</p>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1"></a><span class="co"># Merging the datasets on the county_fips_code</span></span>
+<span id="cb11-2"><a href="#cb11-2"></a>combined_data <span class="ot">&lt;-</span> childcare_costs <span class="sc">|&gt;</span></span>
+<span id="cb11-3"><a href="#cb11-3"></a>  <span class="fu">inner_join</span>(counties, <span class="at">by =</span> <span class="st">&quot;county_fips_code&quot;</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>Removing Missing Data To enhance the reliability of our analysis, we next focused on identifying and excluding rows with missing values, particularly in critical variables such as childcare costs and county characteristics.</p>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1"></a><span class="co"># Removing rows with any missing values</span></span>
+<span id="cb12-2"><a href="#cb12-2"></a>cleaned_data <span class="ot">&lt;-</span> combined_data <span class="sc">|&gt;</span></span>
+<span id="cb12-3"><a href="#cb12-3"></a>  <span class="fu">drop_na</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>Data Filtering With a focus on our analysis timeframe (2008 to 2018) and specific variables of interest, we applied filters to refine our dataset further, ensuring relevance and focus in our analysis.</p>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1"></a><span class="co"># Example of filtering data (if specific years or conditions were needed)</span></span>
+<span id="cb13-2"><a href="#cb13-2"></a><span class="co"># For demonstration, assuming we proceed with the full dataset as is</span></span>
+<span id="cb13-3"><a href="#cb13-3"></a></span>
+<span id="cb13-4"><a href="#cb13-4"></a><span class="co"># cleaned_data &lt;- cleaned_data %&gt;%</span></span>
+<span id="cb13-5"><a href="#cb13-5"></a><span class="co">#   filter(year &gt;= 2008 &amp; year &lt;= 2018)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>Creation of New Variables To facilitate deeper insights and enable more nuanced analyses, we derived new variables from our existing data, such as categorizations based on socio-economic indicators.</p>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1"></a><span class="co"># Example of creating a new variable (categorizing counties by median income)</span></span>
+<span id="cb14-2"><a href="#cb14-2"></a><span class="co"># For demonstration, assuming no new variables were created at this step</span></span>
+<span id="cb14-3"><a href="#cb14-3"></a></span>
+<span id="cb14-4"><a href="#cb14-4"></a><span class="co"># cleaned_data &lt;- cleaned_data %&gt;%</span></span>
+<span id="cb14-5"><a href="#cb14-5"></a><span class="co">#   mutate(income_category = cut(median_household_income, </span></span>
+<span id="cb14-6"><a href="#cb14-6"></a><span class="co">#                                breaks = quantile(median_household_income, </span></span>
+<span id="cb14-7"><a href="#cb14-7"></a><span class="co">#                                                   probs = 0:5 / 5, na.rm = TRUE),</span></span>
+<span id="cb14-8"><a href="#cb14-8"></a><span class="co">#                                include.lowest = TRUE))</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>Final Dataset Dimensions After these steps, we examined the dimensions of our final dataset to confirm the scope of our analysis base:</p>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1"></a><span class="fu">nrow</span>(cleaned_data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 23342</code></pre>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1"></a><span class="fu">ncol</span>(cleaned_data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 64</code></pre>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1"></a><span class="fu">dim</span>(cleaned_data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 23342    64</code></pre>
+</div>
+</div>
+</section>
+<section id="section-3" class="level1">
+<h1>Section 3</h1>
+<p>Did childcare costs (by age group) on average change over time from 2008 to 2018?</p>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1"></a>cost_trends <span class="ot">&lt;-</span> cleaned_data <span class="sc">|&gt;</span></span>
+<span id="cb21-2"><a href="#cb21-2"></a>  <span class="fu">select</span>(study_year, mc_infant, mc_toddler, mc_preschool) <span class="sc">|&gt;</span></span>
+<span id="cb21-3"><a href="#cb21-3"></a>  <span class="fu">group_by</span>(study_year) <span class="sc">|&gt;</span></span>
+<span id="cb21-4"><a href="#cb21-4"></a>  <span class="fu">summarize</span>(<span class="fu">across</span>(<span class="fu">starts_with</span>(<span class="st">&quot;mc&quot;</span>), mean, <span class="at">na.rm =</span> <span class="cn">TRUE</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: There was 1 warning in `summarize()`.
+ℹ In argument: `across(starts_with(&quot;mc&quot;), mean, na.rm = TRUE)`.
+ℹ In group 1: `study_year = 2008`.
+Caused by warning:
+! The `...` argument of `across()` is deprecated as of dplyr 1.1.0.
+Supply arguments directly to `.fns` through an anonymous function instead.
+
+  # Previously
+  across(a:b, mean, na.rm = TRUE)
+
+  # Now
+  across(a:b, \(x) mean(x, na.rm = TRUE))</code></pre>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1"></a><span class="fu">ggplot</span>(cost_trends, <span class="fu">aes</span>(<span class="at">x =</span> study_year)) <span class="sc">+</span></span>
+<span id="cb23-2"><a href="#cb23-2"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y =</span> mc_infant, <span class="at">color =</span> <span class="st">&quot;Infant&quot;</span>)) <span class="sc">+</span></span>
+<span id="cb23-3"><a href="#cb23-3"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y =</span> mc_toddler, <span class="at">color =</span> <span class="st">&quot;Toddler&quot;</span>)) <span class="sc">+</span></span>
+<span id="cb23-4"><a href="#cb23-4"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y =</span> mc_preschool, <span class="at">color =</span> <span class="st">&quot;Preschool&quot;</span>)) <span class="sc">+</span></span>
+<span id="cb23-5"><a href="#cb23-5"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">&quot;Childcare Costs Trends from 2008 to 2018&quot;</span>,</span>
+<span id="cb23-6"><a href="#cb23-6"></a>       <span class="at">x =</span> <span class="st">&quot;Year&quot;</span>,</span>
+<span id="cb23-7"><a href="#cb23-7"></a>       <span class="at">y =</span> <span class="st">&quot;Average Cost&quot;</span>,</span>
+<span id="cb23-8"><a href="#cb23-8"></a>       <span class="at">color =</span> <span class="st">&quot;Age Group&quot;</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="data:image/png;base64,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" class="img-fluid" width="672"></p>
+</div>
 </div>
 <!-- -->
 
-</section>
 </section>
 
 </main>
@@ -3393,60 +3603,174 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   }
 });
 </script><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class>
-<div class="sourceCode" id="cb6" data-shortcodes="false"><pre class="sourceCode numberSource markdown number-lines code-with-copy"><code class="sourceCode markdown"><span id="cb6-1"><a href="#cb6-1"></a><span class="co">---</span></span>
-<span id="cb6-2"><a href="#cb6-2"></a><span class="an">title:</span><span class="co"> &quot;DS Project&quot;</span></span>
-<span id="cb6-3"><a href="#cb6-3"></a><span class="an">author:</span><span class="co"> &quot;Lucas Rapeepat, Ian Stripe&quot;</span></span>
-<span id="cb6-4"><a href="#cb6-4"></a><span class="an">format:</span><span class="co"> </span></span>
-<span id="cb6-5"><a href="#cb6-5"></a><span class="co">  html:</span></span>
-<span id="cb6-6"><a href="#cb6-6"></a><span class="co">    toc: true</span></span>
-<span id="cb6-7"><a href="#cb6-7"></a><span class="co">    embed-resources: true</span></span>
-<span id="cb6-8"><a href="#cb6-8"></a><span class="co">    code-fold: true</span></span>
-<span id="cb6-9"><a href="#cb6-9"></a><span class="co">    code-line-numbers: true</span></span>
-<span id="cb6-10"><a href="#cb6-10"></a><span class="co">    code-summary: &quot;SHOW ME THE CODE!&quot;</span></span>
-<span id="cb6-11"><a href="#cb6-11"></a><span class="co">    code-tools: true</span></span>
-<span id="cb6-12"><a href="#cb6-12"></a><span class="co">    theme: yeti</span></span>
-<span id="cb6-13"><a href="#cb6-13"></a><span class="an">editor:</span><span class="co"> visual</span></span>
-<span id="cb6-14"><a href="#cb6-14"></a><span class="co">---</span></span>
-<span id="cb6-15"><a href="#cb6-15"></a></span>
-<span id="cb6-16"><a href="#cb6-16"></a><span class="fu"># Introduction</span></span>
-<span id="cb6-17"><a href="#cb6-17"></a></span>
-<span id="cb6-18"><a href="#cb6-18"></a>In the contemporary landscape of American family life, the cost of childcare emerges as a pivotal factor influencing economic stability, parental employment, and, ultimately, child welfare. Access to affordable, quality childcare has been linked to a range of positive outcomes, including increased workforce participation, particularly among women, and enhanced child development. Yet, for many families across the United States, childcare remains a significant financial burden, absorbing a disproportionate share of household income. This project seeks to illuminate the complexities surrounding childcare costs, shedding light on their variability across different geographical regions and over time.</span>
-<span id="cb6-19"><a href="#cb6-19"></a></span>
-<span id="cb6-20"><a href="#cb6-20"></a>This analysis is anchored in data drawn from the National Database of Childcare Prices, the most comprehensive federal repository of childcare price information at the county level. Spanning from 2008 to 2018, this database offers a granular look at childcare costs across various dimensions: by provider type, the age of children, and county characteristics. The project utilizes two primary data sets: childcare_costs.csv, containing detailed childcare price data, and counties.csv, which provides a suite of county-level attributes. These datasets are unified through the county_fips_code, enabling a holistic examination of how childcare costs correlate with a myriad of socioeconomic factors.</span>
-<span id="cb6-21"><a href="#cb6-21"></a></span>
-<span id="cb6-22"><a href="#cb6-22"></a>The goal of this project is not merely to chart the ebb and flow of childcare expenses but to understand the broader implications of these costs on families and communities. By employing a robust analytical framework, this study will explore several key questions: How have childcare costs evolved over the last decade? Do these costs exhibit significant variability across states or regions? What socioeconomic variables—such as unemployment rates, median household income, or racial composition—interact most dynamically with childcare expenses?</span>
-<span id="cb6-23"><a href="#cb6-23"></a></span>
-<span id="cb6-24"><a href="#cb6-24"></a>The answers to these questions promise not only to advance our understanding of childcare economics but also to inform policy discussions aimed at making quality childcare more accessible and affordable. Through a meticulous analysis of available data, this project endeavors to contribute a meaningful voice to the ongoing dialogue about how best to support American families in balancing the demands of work and child-rearing.</span>
-<span id="cb6-25"><a href="#cb6-25"></a></span>
-<span id="cb6-26"><a href="#cb6-26"></a></span>
-<span id="cb6-27"><a href="#cb6-27"></a></span>
-<span id="cb6-28"><a href="#cb6-28"></a></span>
-<span id="cb6-29"><a href="#cb6-29"></a></span>
-<span id="cb6-30"><a href="#cb6-30"></a></span>
-<span id="cb6-31"><a href="#cb6-31"></a></span>
-<span id="cb6-32"><a href="#cb6-32"></a></span>
-<span id="cb6-35"><a href="#cb6-35"></a><span class="in">```{r}</span></span>
-<span id="cb6-36"><a href="#cb6-36"></a><span class="co">#Set-up</span></span>
-<span id="cb6-37"><a href="#cb6-37"></a><span class="fu">library</span>(tidyverse)</span>
-<span id="cb6-38"><a href="#cb6-38"></a>counties <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">&quot;C:/Users/Lucas Rapeepat/Downloads/counties.csv&quot;</span>)</span>
-<span id="cb6-39"><a href="#cb6-39"></a>costs <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">&quot;C:/Users/Lucas Rapeepat/Downloads/childcare_costs.csv&quot;</span>)</span>
-<span id="cb6-40"><a href="#cb6-40"></a></span>
-<span id="cb6-41"><a href="#cb6-41"></a></span>
-<span id="cb6-42"><a href="#cb6-42"></a><span class="co">#Use drop_na to pre-process data</span></span>
-<span id="cb6-43"><a href="#cb6-43"></a><span class="in">```</span></span>
-<span id="cb6-44"><a href="#cb6-44"></a></span>
-<span id="cb6-45"><a href="#cb6-45"></a></span>
-<span id="cb6-46"><a href="#cb6-46"></a></span>
-<span id="cb6-47"><a href="#cb6-47"></a><span class="fu">## Joining the Tables and filtering out N/A</span></span>
-<span id="cb6-48"><a href="#cb6-48"></a></span>
-<span id="cb6-51"><a href="#cb6-51"></a><span class="in">```{r}</span></span>
-<span id="cb6-52"><a href="#cb6-52"></a>ccosts <span class="ot">&lt;-</span> costs <span class="sc">|&gt;</span></span>
-<span id="cb6-53"><a href="#cb6-53"></a>  <span class="fu">inner_join</span>(counties, <span class="at">by =</span> <span class="st">&quot;county_fips_code&quot;</span>) <span class="sc">|&gt;</span></span>
-<span id="cb6-54"><a href="#cb6-54"></a>  <span class="fu">drop_na</span>()</span>
-<span id="cb6-55"><a href="#cb6-55"></a></span>
-<span id="cb6-56"><a href="#cb6-56"></a></span>
-<span id="cb6-57"><a href="#cb6-57"></a><span class="in">```</span></span>
-<span id="cb6-58"><a href="#cb6-58"></a></span>
+<div class="sourceCode" id="cb24" data-shortcodes="false"><pre class="sourceCode numberSource markdown number-lines code-with-copy"><code class="sourceCode markdown"><span id="cb24-1"><a href="#cb24-1"></a><span class="co">---</span></span>
+<span id="cb24-2"><a href="#cb24-2"></a><span class="an">title:</span><span class="co"> &quot;DS Project&quot;</span></span>
+<span id="cb24-3"><a href="#cb24-3"></a><span class="an">author:</span><span class="co"> &quot;Lucas Rapeepat, Ian Stripe&quot;</span></span>
+<span id="cb24-4"><a href="#cb24-4"></a><span class="an">format:</span><span class="co"> </span></span>
+<span id="cb24-5"><a href="#cb24-5"></a><span class="co">  html:</span></span>
+<span id="cb24-6"><a href="#cb24-6"></a><span class="co">    toc: true</span></span>
+<span id="cb24-7"><a href="#cb24-7"></a><span class="co">    embed-resources: true</span></span>
+<span id="cb24-8"><a href="#cb24-8"></a><span class="co">    code-fold: true</span></span>
+<span id="cb24-9"><a href="#cb24-9"></a><span class="co">    code-line-numbers: true</span></span>
+<span id="cb24-10"><a href="#cb24-10"></a><span class="co">    code-summary: &quot;SHOW ME THE CODE!&quot;</span></span>
+<span id="cb24-11"><a href="#cb24-11"></a><span class="co">    code-tools: true</span></span>
+<span id="cb24-12"><a href="#cb24-12"></a><span class="co">    theme: yeti</span></span>
+<span id="cb24-13"><a href="#cb24-13"></a><span class="an">editor:</span><span class="co"> visual</span></span>
+<span id="cb24-14"><a href="#cb24-14"></a><span class="co">---</span></span>
+<span id="cb24-15"><a href="#cb24-15"></a></span>
+<span id="cb24-16"><a href="#cb24-16"></a><span class="fu"># Introduction</span></span>
+<span id="cb24-17"><a href="#cb24-17"></a></span>
+<span id="cb24-18"><a href="#cb24-18"></a>In the contemporary landscape of American family life, the cost of childcare emerges as a pivotal factor influencing economic stability, parental employment, and, ultimately, child welfare. Access to affordable, quality childcare has been linked to a range of positive outcomes, including increased workforce participation, particularly among women, and enhanced child development. Yet, for many families across the United States, childcare remains a significant financial burden, absorbing a disproportionate share of household income. This project seeks to illuminate the complexities surrounding childcare costs, shedding light on their variability across different geographical regions and over time.</span>
+<span id="cb24-19"><a href="#cb24-19"></a></span>
+<span id="cb24-20"><a href="#cb24-20"></a>This analysis is anchored in data drawn from the National Database of Childcare Prices, the most comprehensive federal repository of childcare price information at the county level. Spanning from 2008 to 2018, this database offers a granular look at childcare costs across various dimensions: by provider type, the age of children, and county characteristics. The project utilizes two primary data sets: childcare_costs.csv, containing detailed childcare price data, and counties.csv, which provides a suite of county-level attributes. These datasets are unified through the county_fips_code, enabling a holistic examination of how childcare costs correlate with a myriad of socioeconomic factors.</span>
+<span id="cb24-21"><a href="#cb24-21"></a></span>
+<span id="cb24-22"><a href="#cb24-22"></a>The goal of this project is not merely to chart the ebb and flow of childcare expenses but to understand the broader implications of these costs on families and communities. By employing a robust analytical framework, this study will explore several key questions: How have childcare costs evolved over the last decade? Do these costs exhibit significant variability across states or regions? What socioeconomic variables—such as unemployment rates, median household income, or racial composition—interact most dynamically with childcare expenses?</span>
+<span id="cb24-23"><a href="#cb24-23"></a></span>
+<span id="cb24-24"><a href="#cb24-24"></a>The answers to these questions promise not only to advance our understanding of childcare economics but also to inform policy discussions aimed at making quality childcare more accessible and affordable. Through a meticulous analysis of available data, this project endeavors to contribute a meaningful voice to the ongoing dialogue about how best to support American families in balancing the demands of work and child-rearing.</span>
+<span id="cb24-25"><a href="#cb24-25"></a></span>
+<span id="cb24-26"><a href="#cb24-26"></a></span>
+<span id="cb24-27"><a href="#cb24-27"></a></span>
+<span id="cb24-28"><a href="#cb24-28"></a></span>
+<span id="cb24-29"><a href="#cb24-29"></a></span>
+<span id="cb24-30"><a href="#cb24-30"></a></span>
+<span id="cb24-31"><a href="#cb24-31"></a></span>
+<span id="cb24-32"><a href="#cb24-32"></a></span>
+<span id="cb24-33"><a href="#cb24-33"></a></span>
+<span id="cb24-34"><a href="#cb24-34"></a></span>
+<span id="cb24-35"><a href="#cb24-35"></a></span>
+<span id="cb24-36"><a href="#cb24-36"></a></span>
+<span id="cb24-37"><a href="#cb24-37"></a></span>
+<span id="cb24-38"><a href="#cb24-38"></a></span>
+<span id="cb24-39"><a href="#cb24-39"></a><span class="fu"># Step 2</span></span>
+<span id="cb24-40"><a href="#cb24-40"></a></span>
+<span id="cb24-43"><a href="#cb24-43"></a><span class="in">```{r}</span></span>
+<span id="cb24-44"><a href="#cb24-44"></a><span class="co">#Set-up</span></span>
+<span id="cb24-45"><a href="#cb24-45"></a><span class="co">#| message: false</span></span>
+<span id="cb24-46"><a href="#cb24-46"></a><span class="co">#| warning: false</span></span>
+<span id="cb24-47"><a href="#cb24-47"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb24-48"><a href="#cb24-48"></a><span class="in">```</span></span>
+<span id="cb24-49"><a href="#cb24-49"></a></span>
+<span id="cb24-50"><a href="#cb24-50"></a></span>
+<span id="cb24-51"><a href="#cb24-51"></a></span>
+<span id="cb24-52"><a href="#cb24-52"></a><span class="fu">## Data Pre-Processing</span></span>
+<span id="cb24-53"><a href="#cb24-53"></a></span>
+<span id="cb24-54"><a href="#cb24-54"></a>Our journey through data analysis began with a structured approach to preparing our datasets, childcare_costs.csv and counties.csv, for comprehensive exploration. This preparation involved a series of steps aimed at refining and integrating our data, ensuring it was primed for the analyses that lay ahead. Here, we detail the practical steps taken, accompanied by the R code used to execute these operations.</span>
+<span id="cb24-55"><a href="#cb24-55"></a></span>
+<span id="cb24-56"><a href="#cb24-56"></a>Initial Data Inspection</span>
+<span id="cb24-57"><a href="#cb24-57"></a>Before delving into the pre-processing steps, we initiated our exploration by loading and inspecting the datasets to understand their structure:</span>
+<span id="cb24-58"><a href="#cb24-58"></a></span>
+<span id="cb24-59"><a href="#cb24-59"></a><span class="fu">### Loading the datasets</span></span>
+<span id="cb24-62"><a href="#cb24-62"></a><span class="in">```{r}</span></span>
+<span id="cb24-63"><a href="#cb24-63"></a>childcare_costs <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">&quot;C:/Users/Lucas Rapeepat/Downloads/childcare_costs.csv&quot;</span>)</span>
+<span id="cb24-64"><a href="#cb24-64"></a>counties <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">&quot;C:/Users/Lucas Rapeepat/Downloads/counties.csv&quot;</span>)</span>
+<span id="cb24-65"><a href="#cb24-65"></a></span>
+<span id="cb24-66"><a href="#cb24-66"></a><span class="in">```</span></span>
+<span id="cb24-67"><a href="#cb24-67"></a></span>
+<span id="cb24-68"><a href="#cb24-68"></a><span class="fu"># Initial inspection to understand the structure and contents</span></span>
+<span id="cb24-71"><a href="#cb24-71"></a><span class="in">```{r}</span></span>
+<span id="cb24-72"><a href="#cb24-72"></a><span class="fu">str</span>(childcare_costs)</span>
+<span id="cb24-73"><a href="#cb24-73"></a><span class="fu">str</span>(counties)</span>
+<span id="cb24-74"><a href="#cb24-74"></a><span class="in">```</span></span>
+<span id="cb24-75"><a href="#cb24-75"></a>Number of Counties:</span>
+<span id="cb24-76"><a href="#cb24-76"></a>How many unique counties are available for analysis?</span>
+<span id="cb24-77"><a href="#cb24-77"></a></span>
+<span id="cb24-80"><a href="#cb24-80"></a><span class="in">```{r}</span></span>
+<span id="cb24-81"><a href="#cb24-81"></a>counties <span class="sc">|&gt;</span></span>
+<span id="cb24-82"><a href="#cb24-82"></a>  <span class="fu">n_distinct</span>()</span>
+<span id="cb24-83"><a href="#cb24-83"></a><span class="in">```</span></span>
+<span id="cb24-84"><a href="#cb24-84"></a></span>
+<span id="cb24-85"><a href="#cb24-85"></a>Joining the Datasets</span>
+<span id="cb24-86"><a href="#cb24-86"></a>Our first major step was to merge the two datasets using the county_fips_code as a key. This inner join operation ensured that we retained only those records present in both datasets, facilitating a unified analysis framework.</span>
+<span id="cb24-87"><a href="#cb24-87"></a></span>
+<span id="cb24-90"><a href="#cb24-90"></a><span class="in">```{r}</span></span>
+<span id="cb24-91"><a href="#cb24-91"></a><span class="co"># Merging the datasets on the county_fips_code</span></span>
+<span id="cb24-92"><a href="#cb24-92"></a>combined_data <span class="ot">&lt;-</span> childcare_costs <span class="sc">|&gt;</span></span>
+<span id="cb24-93"><a href="#cb24-93"></a>  <span class="fu">inner_join</span>(counties, <span class="at">by =</span> <span class="st">&quot;county_fips_code&quot;</span>)</span>
+<span id="cb24-94"><a href="#cb24-94"></a></span>
+<span id="cb24-95"><a href="#cb24-95"></a><span class="in">```</span></span>
+<span id="cb24-96"><a href="#cb24-96"></a></span>
+<span id="cb24-97"><a href="#cb24-97"></a></span>
+<span id="cb24-98"><a href="#cb24-98"></a>Removing Missing Data</span>
+<span id="cb24-99"><a href="#cb24-99"></a>To enhance the reliability of our analysis, we next focused on identifying and excluding rows with missing values, particularly in critical variables such as childcare costs and county characteristics.</span>
+<span id="cb24-100"><a href="#cb24-100"></a></span>
+<span id="cb24-103"><a href="#cb24-103"></a><span class="in">```{r}</span></span>
+<span id="cb24-104"><a href="#cb24-104"></a><span class="co"># Removing rows with any missing values</span></span>
+<span id="cb24-105"><a href="#cb24-105"></a>cleaned_data <span class="ot">&lt;-</span> combined_data <span class="sc">|&gt;</span></span>
+<span id="cb24-106"><a href="#cb24-106"></a>  <span class="fu">drop_na</span>()</span>
+<span id="cb24-107"><a href="#cb24-107"></a></span>
+<span id="cb24-108"><a href="#cb24-108"></a><span class="in">```</span></span>
+<span id="cb24-109"><a href="#cb24-109"></a></span>
+<span id="cb24-110"><a href="#cb24-110"></a></span>
+<span id="cb24-111"><a href="#cb24-111"></a></span>
+<span id="cb24-112"><a href="#cb24-112"></a>Data Filtering</span>
+<span id="cb24-113"><a href="#cb24-113"></a>With a focus on our analysis timeframe (2008 to 2018) and specific variables of interest, we applied filters to refine our dataset further, ensuring relevance and focus in our analysis.</span>
+<span id="cb24-114"><a href="#cb24-114"></a></span>
+<span id="cb24-117"><a href="#cb24-117"></a><span class="in">```{r}</span></span>
+<span id="cb24-118"><a href="#cb24-118"></a><span class="co"># Example of filtering data (if specific years or conditions were needed)</span></span>
+<span id="cb24-119"><a href="#cb24-119"></a><span class="co"># For demonstration, assuming we proceed with the full dataset as is</span></span>
+<span id="cb24-120"><a href="#cb24-120"></a></span>
+<span id="cb24-121"><a href="#cb24-121"></a><span class="co"># cleaned_data &lt;- cleaned_data %&gt;%</span></span>
+<span id="cb24-122"><a href="#cb24-122"></a><span class="co">#   filter(year &gt;= 2008 &amp; year &lt;= 2018)</span></span>
+<span id="cb24-123"><a href="#cb24-123"></a></span>
+<span id="cb24-124"><a href="#cb24-124"></a><span class="in">```</span></span>
+<span id="cb24-125"><a href="#cb24-125"></a></span>
+<span id="cb24-126"><a href="#cb24-126"></a></span>
+<span id="cb24-127"><a href="#cb24-127"></a></span>
+<span id="cb24-128"><a href="#cb24-128"></a>Creation of New Variables</span>
+<span id="cb24-129"><a href="#cb24-129"></a>To facilitate deeper insights and enable more nuanced analyses, we derived new variables from our existing data, such as categorizations based on socio-economic indicators.</span>
+<span id="cb24-130"><a href="#cb24-130"></a></span>
+<span id="cb24-133"><a href="#cb24-133"></a><span class="in">```{r}</span></span>
+<span id="cb24-134"><a href="#cb24-134"></a><span class="co"># Example of creating a new variable (categorizing counties by median income)</span></span>
+<span id="cb24-135"><a href="#cb24-135"></a><span class="co"># For demonstration, assuming no new variables were created at this step</span></span>
+<span id="cb24-136"><a href="#cb24-136"></a></span>
+<span id="cb24-137"><a href="#cb24-137"></a><span class="co"># cleaned_data &lt;- cleaned_data %&gt;%</span></span>
+<span id="cb24-138"><a href="#cb24-138"></a><span class="co">#   mutate(income_category = cut(median_household_income, </span></span>
+<span id="cb24-139"><a href="#cb24-139"></a><span class="co">#                                breaks = quantile(median_household_income, </span></span>
+<span id="cb24-140"><a href="#cb24-140"></a><span class="co">#                                                   probs = 0:5 / 5, na.rm = TRUE),</span></span>
+<span id="cb24-141"><a href="#cb24-141"></a><span class="co">#                                include.lowest = TRUE))</span></span>
+<span id="cb24-142"><a href="#cb24-142"></a></span>
+<span id="cb24-143"><a href="#cb24-143"></a><span class="in">```</span></span>
+<span id="cb24-144"><a href="#cb24-144"></a></span>
+<span id="cb24-145"><a href="#cb24-145"></a></span>
+<span id="cb24-146"><a href="#cb24-146"></a>Final Dataset Dimensions</span>
+<span id="cb24-147"><a href="#cb24-147"></a>After these steps, we examined the dimensions of our final dataset to confirm the scope of our analysis base:</span>
+<span id="cb24-148"><a href="#cb24-148"></a></span>
+<span id="cb24-151"><a href="#cb24-151"></a><span class="in">```{r}</span></span>
+<span id="cb24-152"><a href="#cb24-152"></a><span class="fu">nrow</span>(cleaned_data)</span>
+<span id="cb24-153"><a href="#cb24-153"></a><span class="fu">ncol</span>(cleaned_data)</span>
+<span id="cb24-154"><a href="#cb24-154"></a><span class="fu">dim</span>(cleaned_data)</span>
+<span id="cb24-155"><a href="#cb24-155"></a><span class="in">```</span></span>
+<span id="cb24-156"><a href="#cb24-156"></a></span>
+<span id="cb24-157"><a href="#cb24-157"></a></span>
+<span id="cb24-158"><a href="#cb24-158"></a><span class="fu"># Section 3</span></span>
+<span id="cb24-159"><a href="#cb24-159"></a></span>
+<span id="cb24-160"><a href="#cb24-160"></a></span>
+<span id="cb24-161"><a href="#cb24-161"></a>Did childcare costs (by age group) on average change over time from 2008 to 2018?</span>
+<span id="cb24-164"><a href="#cb24-164"></a><span class="in">```{r}</span></span>
+<span id="cb24-165"><a href="#cb24-165"></a>cost_trends <span class="ot">&lt;-</span> cleaned_data <span class="sc">|&gt;</span></span>
+<span id="cb24-166"><a href="#cb24-166"></a>  <span class="fu">select</span>(study_year, mc_infant, mc_toddler, mc_preschool) <span class="sc">|&gt;</span></span>
+<span id="cb24-167"><a href="#cb24-167"></a>  <span class="fu">group_by</span>(study_year) <span class="sc">|&gt;</span></span>
+<span id="cb24-168"><a href="#cb24-168"></a>  <span class="fu">summarize</span>(<span class="fu">across</span>(<span class="fu">starts_with</span>(<span class="st">&quot;mc&quot;</span>), mean, <span class="at">na.rm =</span> <span class="cn">TRUE</span>))</span>
+<span id="cb24-169"><a href="#cb24-169"></a></span>
+<span id="cb24-170"><a href="#cb24-170"></a><span class="fu">ggplot</span>(cost_trends, <span class="fu">aes</span>(<span class="at">x =</span> study_year)) <span class="sc">+</span></span>
+<span id="cb24-171"><a href="#cb24-171"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y =</span> mc_infant, <span class="at">color =</span> <span class="st">&quot;Infant&quot;</span>)) <span class="sc">+</span></span>
+<span id="cb24-172"><a href="#cb24-172"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y =</span> mc_toddler, <span class="at">color =</span> <span class="st">&quot;Toddler&quot;</span>)) <span class="sc">+</span></span>
+<span id="cb24-173"><a href="#cb24-173"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y =</span> mc_preschool, <span class="at">color =</span> <span class="st">&quot;Preschool&quot;</span>)) <span class="sc">+</span></span>
+<span id="cb24-174"><a href="#cb24-174"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">&quot;Childcare Costs Trends from 2008 to 2018&quot;</span>,</span>
+<span id="cb24-175"><a href="#cb24-175"></a>       <span class="at">x =</span> <span class="st">&quot;Year&quot;</span>,</span>
+<span id="cb24-176"><a href="#cb24-176"></a>       <span class="at">y =</span> <span class="st">&quot;Average Cost&quot;</span>,</span>
+<span id="cb24-177"><a href="#cb24-177"></a>       <span class="at">color =</span> <span class="st">&quot;Age Group&quot;</span>)</span>
+<span id="cb24-178"><a href="#cb24-178"></a><span class="in">```</span></span>
+<span id="cb24-179"><a href="#cb24-179"></a></span>
+<span id="cb24-180"><a href="#cb24-180"></a></span>
+<span id="cb24-181"><a href="#cb24-181"></a></span>
+<span id="cb24-182"><a href="#cb24-182"></a></span>
+<span id="cb24-183"><a href="#cb24-183"></a></span>
+<span id="cb24-184"><a href="#cb24-184"></a></span>
+<span id="cb24-185"><a href="#cb24-185"></a></span>
+<span id="cb24-186"><a href="#cb24-186"></a></span>
+<span id="cb24-187"><a href="#cb24-187"></a></span>
+<span id="cb24-188"><a href="#cb24-188"></a></span>
 </code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div></div></div></div></div>
 </div> <!-- /content -->

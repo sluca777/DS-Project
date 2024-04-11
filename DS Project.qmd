@@ -40,6 +40,8 @@ The answers to these questions promise not only to advance our understanding of 
 
 ```{r}
 #Set-up
+#| message: false
+#| warning: false
 library(tidyverse)
 ```
 
@@ -63,6 +65,13 @@ counties <- read.csv("C:/Users/Lucas Rapeepat/Downloads/counties.csv")
 ```{r}
 str(childcare_costs)
 str(counties)
+```
+Number of Counties:
+How many unique counties are available for analysis?
+
+```{r}
+counties |>
+  n_distinct()
 ```
 
 Joining the Datasets
