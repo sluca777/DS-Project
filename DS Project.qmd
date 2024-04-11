@@ -159,9 +159,80 @@ ggplot(cost_trends, aes(x = study_year)) +
 
 
 
+Did childcare costs differ by state (on average)?
+
+```{r}
+state_costs <- cleaned_data |>
+  group_by(state_name) |>
+  summarize(across(starts_with("mc"), mean, na.rm = TRUE))
+
+state_costs
+
+```
+How were childcare costs related by race?
+
+```{r}
 
 
+library(dplyr)
 
+# Calculate weighted averages for each race and childcare type
+race_weighted_costs <- cleaned_data |>
+  summarize(
+    white_infant = weighted.mean(mc_infant, one_race_w, na.rm = TRUE),
+    black_infant = weighted.mean(mc_infant, one_race_b, na.rm = TRUE),
+    ai_an_infant = weighted.mean(mc_infant, one_race_i, na.rm = TRUE),
+    asian_infant = weighted.mean(mc_infant, one_race_a, na.rm = TRUE),
+    nh_pi_infant = weighted.mean(mc_infant, one_race_h, na.rm = TRUE),
+    other_infant = weighted.mean(mc_infant, one_race_other, na.rm = TRUE),
+
+    white_toddler = weighted.mean(mc_toddler, one_race_w, na.rm = TRUE),
+    black_toddler = weighted.mean(mc_toddler, one_race_b, na.rm = TRUE),
+    ai_an_toddler = weighted.mean(mc_toddler, one_race_i, na.rm = TRUE),
+    asian_toddler = weighted.mean(mc_toddler, one_race_a, na.rm = TRUE),
+    nh_pi_toddler = weighted.mean(mc_toddler, one_race_h, na.rm = TRUE),
+    other_toddler = weighted.mean(mc_toddler, one_race_other, na.rm = TRUE),
+
+    white_preschool = weighted.mean(mc_preschool, one_race_w, na.rm = TRUE),
+    black_preschool = weighted.mean(mc_preschool, one_race_b, na.rm = TRUE),
+    ai_an_preschool = weighted.mean(mc_preschool, one_race_i, na.rm = TRUE),
+    asian_preschool = weighted.mean(mc_preschool, one_race_a, na.rm = TRUE),
+    nh_pi_preschool = weighted.mean(mc_preschool, one_race_h, na.rm = TRUE),
+    other_preschool = weighted.mean(mc_preschool, one_race_other, na.rm = TRUE)
+  )
+
+# Transform data to have races as rows and childcare cost denominations as columns
+race_weighted_costs_long <- race_weighted_costs |>
+  pivot_longer(
+    everything(),
+    names_to = c(".value", "childcare_type"),
+    names_pattern = "(.*)_(.*)"
+  )
+  
+
+race_weighted_costs_long
+
+
+```
+
+Comparison of Family Care vs Center-Based
+
+```{r}
+
+# Calculate the average costs for center-based and family childcare for each age group
+care_cost_comparison <- cleaned_data |>
+  summarize(
+    avg_center_infant = mean(mc_infant, na.rm = TRUE),
+    avg_family_infant = mean(mfcc_infant, na.rm = TRUE),
+    avg_center_toddler = mean(mc_toddler, na.rm = TRUE),
+    avg_family_toddler = mean(mfcc_toddler, na.rm = TRUE),
+    avg_center_preschool = mean(mc_preschool, na.rm = TRUE),
+    avg_family_preschool = mean(mfcc_preschool, na.rm = TRUE)
+  ) 
+
+care_cost_comparison
+
+```
 
 
 
