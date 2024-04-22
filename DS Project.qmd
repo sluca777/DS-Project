@@ -91,6 +91,14 @@ There are 1779 unique counties available for analysis, which we counted from the
 # Section 3
 
 
+Descriptive Statistics for childcare and family costs:
+```{r}
+# Calculate descriptive statistics for the different childcare costs
+cleaned_data |>
+  select(mcsa, mfccsa) |>
+  summarise_all(list(mean = mean, median = median, IQR = IQR), na.rm = TRUE)
+```
+
 
 
 Did childcare costs differ by state (on average)?
@@ -103,6 +111,7 @@ state_costs <- cleaned_data |>
 state_costs
 
 ```
+
 How were childcare costs related by race?
 
 ```{r}
@@ -167,6 +176,35 @@ care_cost_comparison <- cleaned_data |>
 care_cost_comparison
 
 ```
+Childcare Costs related to Poverty Rates?
+
+```{r}
+#Lowest 5 Poverty Rates
+cleaned_data |>
+  select(pr_f, mc_infant, mc_toddler, mc_preschool, mfcc_infant, mfcc_toddler, mfcc_preschool) |>
+  arrange(pr_f) |>
+  slice_head(n = 5)
+
+#Highest 5 Poverty Rates
+cleaned_data |>
+  select(pr_f, mc_infant, mc_toddler, mc_preschool, mfcc_infant, mfcc_toddler, mfcc_preschool) |>
+  arrange(desc(pr_f)) |>
+  slice_head(n = 5)
+
+```
+
+Childcare Costs in Counties with High Service Sector Employment
+Determine if counties with a higher proportion of service sector employment see different childcare costs.
+```{r}
+ cleaned_data |>
+  filter(emp_service > median(emp_service, na.rm = TRUE)) |>
+  summarise(
+    median_cost_infant = median(mc_infant, na.rm = TRUE),
+    median_cost_toddler = median(mc_toddler, na.rm = TRUE),
+    median_cost_preschool = median(mc_preschool, na.rm = TRUE)
+  )
+
+```
 
 
 # Section 4
@@ -191,14 +229,11 @@ ggplot(cost_trends, aes(x = study_year)) +
 How were Childcare costs related to Median Household Income?
 
 ```{r}
-
-
-# Assuming 'cleaned_data' has columns 'mhi_2018' for Median Household Income and 'mc_infant' for Infant Care Costs.
-ggplot(cleaned_data, aes(x = mhi_2018, y = mc_infant)) +
+ggplot(cleaned_data, aes(x = mhi_2018, y = mcsa)) +
   geom_point(aes(color = county_fips_code)) +
   labs(title = "Scatterplot of Childcare Costs vs. Median Household Income",
        x = "Median Household Income ($)",
-       y = "Average Infant Childcare Costs ($/week)",
+       y = "Average Childcare Costs ($/week)",
        color = "County Code"
     ) 
   
@@ -206,10 +241,10 @@ ggplot(cleaned_data, aes(x = mhi_2018, y = mc_infant)) +
 ```
 
 ```{r}
-ggplot(cleaned_data, aes(x = mc_infant)) +
+ggplot(cleaned_data, aes(x = mcsa)) +
   geom_histogram(bins = 30, fill = "blue", alpha = 0.7) +
-  labs(title = "Histogram of Infant Childcare Costs Distribution",
-       x = "Infant Childcare Costs ($/week)",
+  labs(title = "Childcare Costs Distribution",
+       x = "Childcare Costs ($/week)",
        y = "Frequency") +
   theme_minimal()
 
