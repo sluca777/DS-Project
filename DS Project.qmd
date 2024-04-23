@@ -98,6 +98,21 @@ cleaned_data |>
   select(mcsa, mfccsa) |>
   summarise_all(list(mean = mean, median = median, IQR = IQR), na.rm = TRUE)
 ```
+Grouping highest costs by county
+
+```{r}
+cleaned_data |>
+  group_by(county_name) |>
+  summarize(
+    childcare_avg = mean(mcsa, na.rm = TRUE),
+    family_avg = mean(mfccsa, na.rm = TRUE)
+  ) |>
+  arrange(desc(childcare_avg)) |>
+  slice_head(n = 5)
+
+
+  
+```
 
 
 
@@ -242,9 +257,16 @@ ggplot(cleaned_data, aes(x = mhi_2018, y = mcsa)) +
 
 ```{r}
 ggplot(cleaned_data, aes(x = mcsa)) +
-  geom_histogram(bins = 30, fill = "blue", alpha = 0.7) +
+  geom_histogram(bins = 30, fill = "blue") +
   labs(title = "Childcare Costs Distribution",
        x = "Childcare Costs ($/week)",
+       y = "Frequency") +
+  theme_minimal()
+
+ggplot(cleaned_data, aes(x = mfccsa)) +
+  geom_histogram(bins = 30, fill = "blue") +
+  labs(title = "Family Costs Distribution",
+       x = "Family Costs ($/week)",
        y = "Frequency") +
   theme_minimal()
 
