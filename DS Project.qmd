@@ -89,7 +89,7 @@ descstats <- cleaned_data |>
   summarise_all(list(mean = mean, median = median, IQR = IQR), na.rm = TRUE)
 
 datatable(descstats,
-          caption = "Descriptive Stats for Childcare Costs",
+          caption = "Table 1: Descriptive Stats for Childcare Costs",
           colnames = c("Number", "Center-Based Mean", "Family-Based Mean", "Center-Based Median", "Family-Based Median", "Center-Based IQR", "Family-Based IQR")
   
   
@@ -109,7 +109,7 @@ countycosts <- cleaned_data |>
   slice_head(n = 5)
 
 datatable(countycosts,
-          caption = "County Costs",
+          caption = "Table 2: County Costs",
           colnames = c("County Name", "Childcare Average", "Family Average")
   
 )
@@ -127,7 +127,7 @@ state_costs <- cleaned_data |>
 
 datatable(
   state_costs,
-  caption = "Costs by State",
+  caption = "Table 3: Costs by State",
   colnames = c("Number", "State", "Center-Based", "Infant", "Toddler", "Preschooler")
 )
 ```
@@ -175,7 +175,7 @@ race_weighted_costs_long <- race_weighted_costs |>
 
 datatable(
   race_weighted_costs_long,
-  caption = "Costs by Race",
+  caption = "Table 4: Costs by Race",
   colnames = c("Childcare Type", "White", "Black", "Native American", "Asian", "Pacific Islander", "Other")
 )
 
@@ -197,7 +197,7 @@ care_cost_comparison <- cleaned_data |>
   ) 
 
 datatable (care_cost_comparison,
-           caption = "Comparison of Center-Based and Family Costs",
+           caption = "Table 5: Comparison of Center-Based and Family Costs",
            colnames = c("Average Center Infant", "Average Family Infant", "Average Center Toddler", "Average Family Toddler", "Average Center Preschool", "Average Family Preschool")
            
 )
@@ -213,7 +213,7 @@ lowpoverty <- cleaned_data |>
   slice_head(n = 5)
 
 datatable(lowpoverty,
-          caption = "Lowest Poverty Rates",
+          caption = "Table 6: Lowest Poverty Rates",
           colnames = c("Poverty Rate", "Center-Based Infant", "Center-Based Toddler", "Center-Based Preschool", "Family-Based Infant", "Family-Based Toddler", "Family-Based Preschool"
           )
   
@@ -226,7 +226,7 @@ highpoverty <- cleaned_data |>
   slice_head(n = 5)
 
 datatable(highpoverty,
-          caption = "Highest Poverty Rates",
+          caption = "Table 7: Highest Poverty Rates",
           colnames = c("Poverty Rate", "Center-Based Infant", "Center-Based Toddler", "Center-Based Preschool", "Family-Based Infant", "Family-Based Toddler", "Family-Based Preschool"
                        ))
 
@@ -245,7 +245,7 @@ Childcare Costs in Counties with High Service Sector Employment Determine if cou
 
 datatable (
   service,
-  caption = "Costs in High Service Sector Employment Counties",
+  caption = "Table 8: Costs in High Service Sector Employment Counties",
   colnames = c("Number", "Median Infant Cost", "Median Cost Toddler", "Median Cost Preschool")
 )
 
@@ -279,7 +279,7 @@ ggplot(cost_trends, aes(x = study_year)) +
   geom_line(aes(y = mc_infant, color = "Infant")) +
   geom_line(aes(y = mc_toddler, color = "Toddler")) +
   geom_line(aes(y = mc_preschool, color = "Preschool")) +
-  labs(title = "Center-Based Childcare Costs Trends from 2008 to 2018",
+  labs(title = "Figure 1: Center-Based Childcare Costs Trends from 2008 to 2018",
        x = "Year",
        y = "Average Cost",
        color = "Age Group")
@@ -292,7 +292,7 @@ How were Childcare costs related to Median Household Income?
 ```{r}
 ggplot(cleaned_data, aes(x = mhi_2018, y = mcsa)) +
   geom_point(aes(color = county_fips_code)) +
-  labs(title = "Scatterplot of Center-Based Childcare Costs vs. Median Household Income",
+  labs(title = "Figure 2: Scatterplot of Center-Based Childcare Costs vs. Median Household Income",
        x = "Median Household Income ($)",
        y = "Average Childcare Costs ($/week)",
        color = "County Code"
@@ -300,7 +300,7 @@ ggplot(cleaned_data, aes(x = mhi_2018, y = mcsa)) +
   
 ggplot(cleaned_data, aes(x = mhi_2018, y = mfccsa)) +
   geom_point(aes(color = county_fips_code)) +
-  labs(title = "Scatterplot of Family-Based Childcare Costs vs. Median Household Income",
+  labs(title = "Figure 3: Scatterplot of Family-Based Childcare Costs vs. Median Household Income",
        x = "Median Household Income ($)",
        y = "Average Family Costs ($/week)",
        color = "County Code"
@@ -313,14 +313,14 @@ This scatterplot displays the relationship between median household income and a
 ```{r}
 ggplot(cleaned_data, aes(x = mcsa)) +
   geom_histogram(bins = 30, fill = "blue") +
-  labs(title = "Center-Based Costs Distribution",
+  labs(title = "Figure 4: Center-Based Costs Distribution",
        x = "Center-Based Costs ($/week)",
        y = "Frequency") +
   theme_minimal()
 
 ggplot(cleaned_data, aes(x = mfccsa)) +
   geom_histogram(bins = 30, fill = "blue") +
-  labs(title = "Family Costs Distribution",
+  labs(title = "Figure 5: Family Costs Distribution",
        x = "Family Costs ($/week)",
        y = "Frequency") +
   theme_minimal()
@@ -332,7 +332,7 @@ This histogram shows the distribution of weekly childcare costs, both in center-
 ```{r}
 ggplot(cleaned_data, aes(x = mhi_2018)) +
   geom_boxplot() +
-  labs(title = "Median Household Income",
+  labs(title = "Figure 6: Median Household Income",
        x = "Income") +
   theme_minimal()
 ```
