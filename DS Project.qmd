@@ -24,18 +24,6 @@ The goal of this project is not merely to chart the ebb and flow of childcare ex
 The answers to these questions promise not only to advance our understanding of childcare economics but also to inform policy discussions aimed at making quality childcare more accessible and affordable. Through a meticulous analysis of available data, this project endeavors to contribute a meaningful voice to the ongoing dialogue about how best to support American families in balancing the demands of work and child-rearing.
 
 
-
-
-
-
-
-
-
-
-
-
-
-
 # Section 2
 
 ```{r}
@@ -46,6 +34,8 @@ library(tidyverse)
 ```
 
 ```{r}
+#| message: false
+#| warning: false
 # Load and inspect the datasets
 childcare_costs <- read.csv("C:/Users/Lucas Rapeepat/Downloads/childcare_costs.csv")
 counties <- read.csv("C:/Users/Lucas Rapeepat/Downloads/counties.csv")
@@ -220,7 +210,19 @@ Determine if counties with a higher proportion of service sector employment see 
   )
 
 ```
+Using the dplyr package, we computed key descriptive statistics for childcare and family costs. The mean, median, and interquartile range (IQR) for monthly childcare service average (mcsa) and monthly family childcare service average (mfccsa) were calculated to provide a baseline understanding of cost distributions. These statistics indicate significant variability in costs, with a noteworthy spread between the 25th and 75th percentiles, highlighting the economic diversity in childcare expenses across the dataset.
 
+To delve deeper, we examined the counties with the highest average childcare costs. By grouping and summarizing the data by county, and then arranging the results in descending order, we identified counties like Rockland and Westchester in New York, which showed exceptionally high childcare expenses. This regional variability underscores the geographical disparities in childcare affordability.
+
+Further analysis explored how childcare costs varied by state, using a grouped summary across states that calculated the mean for various childcare-related expenses. This state-level breakdown revealed substantial differences, reflecting the socio-economic and policy landscape that significantly impacts childcare costs across the United States.
+
+The relationship between childcare costs and race was also investigated. By calculating weighted averages for childcare costs across different racial demographics and childcare types (infant, toddler, preschool), we observed that costs vary notably by race, with Asian families typically facing higher expenses. This points to potential systemic inequalities that might affect access to childcare services based on racial lines.
+
+A comparison of family care versus center-based care costs showed that, on average, center-based care is more expensive across all age groups. This comparison is crucial for families making decisions between these two types of childcare based on their financial capabilities.
+
+Additionally, we looked at how childcare costs correlate with poverty rates by examining counties with the lowest and highest poverty rates. This analysis highlighted that higher poverty rates do not always correlate with lower childcare costs, suggesting that even economically disadvantaged families face high childcare expenses, which could exacerbate financial strain.
+
+Lastly, we assessed whether counties with a higher proportion of service sector employment experienced different childcare costs. The findings indicated that these counties did not necessarily enjoy lower childcare costs, which could imply that employment in service sectors does not benefit from proximity to more affordable childcare solutions.
 
 # Section 4
 
@@ -235,7 +237,7 @@ ggplot(cost_trends, aes(x = study_year)) +
   geom_line(aes(y = mc_infant, color = "Infant")) +
   geom_line(aes(y = mc_toddler, color = "Toddler")) +
   geom_line(aes(y = mc_preschool, color = "Preschool")) +
-  labs(title = "Childcare Costs Trends from 2008 to 2018",
+  labs(title = "Center-Based Childcare Costs Trends from 2008 to 2018",
        x = "Year",
        y = "Average Cost",
        color = "Age Group")
@@ -248,7 +250,7 @@ How were Childcare costs related to Median Household Income?
 ```{r}
 ggplot(cleaned_data, aes(x = mhi_2018, y = mcsa)) +
   geom_point(aes(color = county_fips_code)) +
-  labs(title = "Scatterplot of Childcare Costs vs. Median Household Income",
+  labs(title = "Scatterplot of Center-Based Childcare Costs vs. Median Household Income",
        x = "Median Household Income ($)",
        y = "Average Childcare Costs ($/week)",
        color = "County Code"
@@ -256,7 +258,7 @@ ggplot(cleaned_data, aes(x = mhi_2018, y = mcsa)) +
   
 ggplot(cleaned_data, aes(x = mhi_2018, y = mfccsa)) +
   geom_point(aes(color = county_fips_code)) +
-  labs(title = "Scatterplot of Childcare Costs vs. Median Household Income",
+  labs(title = "Scatterplot of Family-Based Childcare Costs vs. Median Household Income",
        x = "Median Household Income ($)",
        y = "Average Family Costs ($/week)",
        color = "County Code"
@@ -293,3 +295,26 @@ ggplot(cleaned_data, aes(x = mhi_2018)) +
   theme_minimal()
 ```
 The boxplot of median household income provides a summary of income distribution across the dataset. This gives us an image of the wealth levels of the families surveyed, with most earning an income of around $50,000, though there are a group of outliers making over $100,000
+
+
+# Section 5
+
+## Key Findings:
+
+Evolving Childcare Costs (2008-2018): Our analysis demonstrated a consistent increase in childcare costs across all age groups, with infant care remaining the most costly. This trend highlights the escalating financial challenge that childcare poses to families over time.
+Correlation between Household Income and Childcare Costs: We observed a slight positive correlation between median household income and childcare costs. This relationship suggests that higher-income families tend to incur higher childcare expenses, possibly due to opting for higher-quality or more expensive services.
+
+Distribution of Childcare Costs: The distribution of childcare costs, both in center-based and family settings, typically centers around $100 per week, although there is considerable variability. This indicates a broad range of childcare expenses that families face, which can significantly impact their financial stability.
+
+### Limitations
+
+Data Constraints: Our conclusions are constrained by the data available, which may not capture all demographic groups or geographical areas comprehensively. The use of only county-level data may also mask important variations within counties.
+
+Causal Inferences: Due to the nature of the data, our analysis is primarily correlational. As such, we cannot definitively assert causal relationships between socioeconomic factors and childcare costs.
+
+Temporal Limitations: The data covers up to 2018, and recent economic events such as the COVID-19 pandemic may have since altered the landscape of childcare costs and economic conditions significantly.
+
+### Future Research Directions:
+
+Impact of Recent Economic Changes: Research could also explore the impact of recent global economic disruptions, like the COVID-19 pandemic, on childcare costs and family economics to inform current policy discussions.
+Qualitative Studies: Incorporating qualitative research could help capture the personal experiences and challenges families face regarding childcare, offering a more holistic view of the issue's impact on American family life.
