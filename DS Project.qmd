@@ -31,11 +31,13 @@ The answers to these questions promise not only to advance our understanding of 
 #| message: false
 #| warning: false
 library(tidyverse)
+library(DT)
 ```
 
 ```{r}
 #| message: false
 #| warning: false
+
 # Load and inspect the datasets
 childcare_costs <- read.csv("C:/Users/Lucas Rapeepat/Downloads/childcare_costs.csv")
 counties <- read.csv("C:/Users/Lucas Rapeepat/Downloads/counties.csv")
@@ -84,14 +86,21 @@ There are 1779 unique counties available for analysis, which we counted from the
 Descriptive Statistics for childcare and family costs:
 ```{r}
 # Calculate descriptive statistics for the different childcare costs
-cleaned_data |>
+descstats <- cleaned_data |>
   select(mcsa, mfccsa) |>
   summarise_all(list(mean = mean, median = median, IQR = IQR), na.rm = TRUE)
+
+datatable(descstats,
+          caption = "Descriptive Stats for Childcare Costs",
+          colnames = c("Number", "Center-Based Mean", "Family-Based Mean", "Center-Based Median", "Family-Based Median", "Center-Based IQR", "Family-Based IQR")
+  
+  
+)
 ```
 Grouping highest costs by county
 
 ```{r}
-cleaned_data |>
+countycosts <- cleaned_data |>
   group_by(county_name) |>
   summarize(
     childcare_avg = mean(mcsa, na.rm = TRUE),
@@ -100,6 +109,11 @@ cleaned_data |>
   arrange(desc(childcare_avg)) |>
   slice_head(n = 5)
 
+datatable(countycosts,
+          caption = "County Costs",
+          colnames = c("County Name", "Childcare Average", "Family Average")
+  
+)
 
   
 ```
@@ -113,8 +127,11 @@ state_costs <- cleaned_data |>
   group_by(state_name) |>
   summarize(across(starts_with("mc"), mean, na.rm = TRUE))
 
-state_costs
-
+datatable(
+  state_costs,
+  caption = "Costs by State",
+  colnames = c("Number", "State", "Center-Based", "Infant", "Toddler", "Preschooler")
+)
 ```
 
 How were childcare costs related by race?
@@ -129,23 +146,23 @@ race_weighted_costs <- cleaned_data |>
   summarize(
     white_infant = weighted.mean(mc_infant, one_race_w, na.rm = TRUE),
     black_infant = weighted.mean(mc_infant, one_race_b, na.rm = TRUE),
-    ai_an_infant = weighted.mean(mc_infant, one_race_i, na.rm = TRUE),
+    native_infant = weighted.mean(mc_infant, one_race_i, na.rm = TRUE),
     asian_infant = weighted.mean(mc_infant, one_race_a, na.rm = TRUE),
-    nh_pi_infant = weighted.mean(mc_infant, one_race_h, na.rm = TRUE),
+    islander_infant = weighted.mean(mc_infant, one_race_h, na.rm = TRUE),
     other_infant = weighted.mean(mc_infant, one_race_other, na.rm = TRUE),
 
     white_toddler = weighted.mean(mc_toddler, one_race_w, na.rm = TRUE),
     black_toddler = weighted.mean(mc_toddler, one_race_b, na.rm = TRUE),
-    ai_an_toddler = weighted.mean(mc_toddler, one_race_i, na.rm = TRUE),
+    native_toddler = weighted.mean(mc_toddler, one_race_i, na.rm = TRUE),
     asian_toddler = weighted.mean(mc_toddler, one_race_a, na.rm = TRUE),
-    nh_pi_toddler = weighted.mean(mc_toddler, one_race_h, na.rm = TRUE),
+    islander_toddler = weighted.mean(mc_toddler, one_race_h, na.rm = TRUE),
     other_toddler = weighted.mean(mc_toddler, one_race_other, na.rm = TRUE),
 
     white_preschool = weighted.mean(mc_preschool, one_race_w, na.rm = TRUE),
     black_preschool = weighted.mean(mc_preschool, one_race_b, na.rm = TRUE),
-    ai_an_preschool = weighted.mean(mc_preschool, one_race_i, na.rm = TRUE),
+    native_preschool = weighted.mean(mc_preschool, one_race_i, na.rm = TRUE),
     asian_preschool = weighted.mean(mc_preschool, one_race_a, na.rm = TRUE),
-    nh_pi_preschool = weighted.mean(mc_preschool, one_race_h, na.rm = TRUE),
+    islander_preschool = weighted.mean(mc_preschool, one_race_h, na.rm = TRUE),
     other_preschool = weighted.mean(mc_preschool, one_race_other, na.rm = TRUE)
   )
 
@@ -158,8 +175,11 @@ race_weighted_costs_long <- race_weighted_costs |>
   )
   
 
-race_weighted_costs_long
-
+datatable(
+  race_weighted_costs_long,
+  caption = "Costs by Race",
+  colnames = c("Childcare Type", "White", "Black", "Native American", "Asian", "Pacific Islander", "Other")
+)
 
 ```
 
@@ -178,36 +198,57 @@ care_cost_comparison <- cleaned_data |>
     avg_family_preschool = mean(mfcc_preschool, na.rm = TRUE)
   ) 
 
-care_cost_comparison
-
+datatable (care_cost_comparison,
+           caption = "Comparison of Center-Based and Family Costs",
+           colnames = c("Average Center Infant", "Average Family Infant", "Average Center Toddler", "Average Family Toddler", "Average Center Preschool", "Average Family Preschool")
+           
+)
 ```
 Childcare Costs related to Poverty Rates?
 
 ```{r}
 #Lowest 5 Poverty Rates
-cleaned_data |>
+lowpoverty <- cleaned_data |>
   select(pr_f, mc_infant, mc_toddler, mc_preschool, mfcc_infant, mfcc_toddler, mfcc_preschool) |>
   arrange(pr_f) |>
   slice_head(n = 5)
 
+datatable(lowpoverty,
+          caption = "Lowest Poverty Rates",
+          colnames = c("Poverty Rate", "Center-Based Infant", "Center-Based Toddler", "Center-Based Preschool", "Family-Based Infant", "Family-Based Toddler", "Family-Based Preschool"
+          )
+  
+)
+
 #Highest 5 Poverty Rates
-cleaned_data |>
+highpoverty <- cleaned_data |>
   select(pr_f, mc_infant, mc_toddler, mc_preschool, mfcc_infant, mfcc_toddler, mfcc_preschool) |>
   arrange(desc(pr_f)) |>
   slice_head(n = 5)
+
+datatable(highpoverty,
+          caption = "Highest Poverty Rates",
+          colnames = c("Poverty Rate", "Center-Based Infant", "Center-Based Toddler", "Center-Based Preschool", "Family-Based Infant", "Family-Based Toddler", "Family-Based Preschool"
+                       ))
 
 ```
 
 Childcare Costs in Counties with High Service Sector Employment
 Determine if counties with a higher proportion of service sector employment see different childcare costs.
 ```{r}
- cleaned_data |>
+ service <- cleaned_data |>
   filter(emp_service > median(emp_service, na.rm = TRUE)) |>
   summarise(
     median_cost_infant = median(mc_infant, na.rm = TRUE),
     median_cost_toddler = median(mc_toddler, na.rm = TRUE),
     median_cost_preschool = median(mc_preschool, na.rm = TRUE)
   )
+
+datatable (
+  service,
+  caption = "Costs in High Service Sector Employment Counties",
+  colnames = c("Number", "Median Infant Cost", "Median Cost Toddler", "Median Cost Preschool")
+)
 
 ```
 Using the dplyr package, we computed key descriptive statistics for childcare and family costs. The mean, median, and interquartile range (IQR) for monthly childcare service average (mcsa) and monthly family childcare service average (mfccsa) were calculated to provide a baseline understanding of cost distributions. These statistics indicate significant variability in costs, with a noteworthy spread between the 25th and 75th percentiles, highlighting the economic diversity in childcare expenses across the dataset.
@@ -302,6 +343,7 @@ The boxplot of median household income provides a summary of income distribution
 ## Key Findings:
 
 Evolving Childcare Costs (2008-2018): Our analysis demonstrated a consistent increase in childcare costs across all age groups, with infant care remaining the most costly. This trend highlights the escalating financial challenge that childcare poses to families over time.
+
 Correlation between Household Income and Childcare Costs: We observed a slight positive correlation between median household income and childcare costs. This relationship suggests that higher-income families tend to incur higher childcare expenses, possibly due to opting for higher-quality or more expensive services.
 
 Distribution of Childcare Costs: The distribution of childcare costs, both in center-based and family settings, typically centers around $100 per week, although there is considerable variability. This indicates a broad range of childcare expenses that families face, which can significantly impact their financial stability.
