@@ -240,6 +240,8 @@ ggplot(cost_trends, aes(x = study_year)) +
        y = "Average Cost",
        color = "Age Group")
 ```
+This line graph presents the average annual childcare costs for infants, toddlers, and preschoolers from 2008 to 2018. From the graph, it is clear that the average cost for infants was most expensive, and that the older the child gets, the cheaper it is to pay to take care of them. There is also a rising cost over time in general, with the lines following 
+
 
 How were Childcare costs related to Median Household Income?
 
@@ -252,14 +254,23 @@ ggplot(cleaned_data, aes(x = mhi_2018, y = mcsa)) +
        color = "County Code"
     ) 
   
+ggplot(cleaned_data, aes(x = mhi_2018, y = mfccsa)) +
+  geom_point(aes(color = county_fips_code)) +
+  labs(title = "Scatterplot of Childcare Costs vs. Median Household Income",
+       x = "Median Household Income ($)",
+       y = "Average Family Costs ($/week)",
+       color = "County Code"
+    ) 
 
 ```
+This scatterplot displays the relationship between median household income and average weekly childcare costs. There is a slight positive correlation between median household income and average childcare costs.There is a similar correlation between family care and median household income, which is to be expected, as wealthier households can afford to spend more in raising their children.
+
 
 ```{r}
 ggplot(cleaned_data, aes(x = mcsa)) +
   geom_histogram(bins = 30, fill = "blue") +
-  labs(title = "Childcare Costs Distribution",
-       x = "Childcare Costs ($/week)",
+  labs(title = "Center-Based Costs Distribution",
+       x = "Center-Based Costs ($/week)",
        y = "Frequency") +
   theme_minimal()
 
@@ -271,4 +282,14 @@ ggplot(cleaned_data, aes(x = mfccsa)) +
   theme_minimal()
 
 ```
+This histogram shows the distribution of weekly childcare costs, both in center-based and family. The shape and spread of the distribution provide insights into the common cost ranges and the variability of childcare expenses. The distributions are pretty similar, with the median falling around the $100 a week range.  
 
+
+```{r}
+ggplot(cleaned_data, aes(x = mhi_2018)) +
+  geom_boxplot() +
+  labs(title = "Median Household Income",
+       x = "Income") +
+  theme_minimal()
+```
+The boxplot of median household income provides a summary of income distribution across the dataset. This gives us an image of the wealth levels of the families surveyed, with most earning an income of around $50,000, though there are a group of outliers making over $100,000
